@@ -9,7 +9,7 @@
 namespace app\docker\controller;
 
 
-class ShellScript
+class shellscript
 {
     public function getWxdcServerBuildScript($env='dev') {
         $projectName = get_wxdc_server_name();
