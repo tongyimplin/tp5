@@ -47,6 +47,7 @@ cat ./config.js | grep const
         return $buildScripts;
     }
 
+    //获取构建脚本
     public function getPushItemsRunScript($env='dev') {
         $projectName = get_push_items_name();
         $buildScripts = get_latest_run_sh($projectName, $env, 8968);
