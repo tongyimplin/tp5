@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>readFromMongo</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        body {
+            padding-top: 40px;
+        }
+        .fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index:999;
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">数据对比</h4>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p id="J_vipflowid"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>参数</th>
+                                        <th>mongo</th>
+                                        <th>mysql</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>vip编号</td>
+                                    <td id="J_flowId"></td>
+                                    <td id="J_flowId1"></td>
+                                </tr>
+                                <tr>
+                                    <td>商户号</td>
+                                    <td id="J_merchantId"></td>
+                                    <td id="J_merchantId1"></td>
+                                </tr>
+                                <tr>
+                                    <td>门店号</td>
+                                    <td id="J_branchId"></td>
+                                    <td id="J_branchId1"></td>
+                                </tr>
+                                <tr>
+                                    <td>充值日期</td>
+                                    <td id="J_operDate"></td>
+                                    <td id="J_operDate1"></td>
+                                </tr>
+                                <tr>
+                                    <td>充值金额</td>
+                                    <td id="J_amt"></td>
+                                    <td id="J_amt1"></td>
+                                </tr>
+                                <tr>
+                                    <td>赠送金额</td>
+                                    <td id="J_getAmt"></td>
+                                    <td id="J_getAmt1"></td>
+                                </tr>
+                                <tr>
+                                    <td>总金额</td>
+                                    <td id="J_totalAmt"></td>
+                                    <td id="J_totalAmt1"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" onclick="saveChange()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-warning alert-dismissible fixed" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Warning!</strong> <span id="J_console"></span>
+</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>共计有: {$vips | count}个会员的数据有问题</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>merchantId</th>
+                        <th>餐厅名称</th>
+                        <th>branchId</th>
+                        <th>vipFlowId</th>
+                        <th>充值金额</th>
+                        <th>赠送金额</th>
+                        <th>总金额</th>
+                        <th>充值日期</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="vips" id="vip"}
+                    <tr>
+                        <td>{$i | formatNumber=4}</td>
+                        <td>{$vip.merchantId}</td>
+                        <td>{$vip.name | default = '未知'}</td>
+                        <td>{$vip.branchId}</td>
+                        <td>{$vip.vipFlowId}</td>
+                        <td>{$vip.amt}</td>
+                        <td>{$vip.getAmt}</td>
+                        <td>{$vip.totalAmt}</td>
+                        <td>{$vip.operDate}</td>
+                        <td>
+                            <button class="btn btn-info btn-xs" onclick="showChange('{$i-1}')"><span class="glyphicon glyphicon-play-circle" title="对比"></span>对比</button>
+                            <button class="btn btn-success btn-xs" onclick="repair({$i-1})"><span class="glyphicon glyphicon-wrench" title="修复"></span>修复</button>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        var vips = {$vips | json_encode};
+        var curVip = null,
+            curVip1 = null;
+        function showChange(index) {
+            var vip = vips[index];
+            $('#J_vipflowid').text(vip.vipFlowId);
+            $.get("{:url('index/getVipflow')}", {
+                flowId: vip.vipFlowId,
+                operDate: vip.operDate,
+                branchId: vip.branchId
+            }, function(data) {
+                if(data.obj) {
+                    curVip = vip;
+                    curVip1 = data.obj;
+                    renderModal(vip, data.obj);
+                    $('#myModal').modal();
+                }else {
+                    $('#J_console').text(vip.vipFlowId+'没有查询到内容');
+                }
+            }, 'json');
+        }
+
+        function repair(index) {
+            var vip = vips[index];
+            $.get("{:url('index/repiarMongo')}", {
+                flowId: vip.vipFlowId,
+                getAmt: vip.getAmt,
+                totalAmt: vip.totalAmt,
+                operDate: vip.operDate
+            }, function(data) {
+                $('#J_console').text(vip.vipFlowId+'修改的结果: '+data.status);
+            }, 'json');
+        }
+
+        function saveChange() {
+            if(curVip == null || curVip1 == null) {
+                return;
+            }
+            $.get("{:url('index/repiarMongo')}", {
+                flowId: curVip.vipFlowId,
+                getAmt: curVip1.GetAmt,
+                totalAmt: curVip1.RechargingAmt,
+                operDate: curVip.operDate
+            }, function(data) {
+                $('#J_console').text(curVip.vipFlowId+'修改的结果: '+data.status);
+                $('#myModal').modal('hide');
+            }, 'json');
+        }
+
+        function renderModal(vip, vip1) {
+            $('#J_flowId').text(vip.vipFlowId);
+            $('#J_merchantId').text(vip.merchantId);
+            $('#J_branchId').text(vip.branchId);
+            $('#J_operDate').text(vip.operDate);
+            $('#J_amt').text(vip.amt);
+            $('#J_getAmt').text(vip.getAmt);
+            $('#J_totalAmt').text(vip.totalAmt);
+            $('#J_flowId1').text(vip1.FlowId);
+            $('#J_merchantId1').text(vip1.MerchantId);
+            $('#J_branchId1').text(vip1.BranchId);
+            $('#J_operDate1').text(vip1.OperDate);
+            $('#J_amt1').text(vip1.PayAmt);
+            $('#J_getAmt1').text(vip1.GetAmt);
+            $('#J_totalAmt1').text(vip1.PresentAmt);
+        }
+    </script>
+</body>
+</html>

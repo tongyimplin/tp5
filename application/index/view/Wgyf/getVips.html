@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        .flows { display: none1; }
+    </style>
+</head>
+<body>
+    <div class="container container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>会员表</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <pre>{$sqlArr}</pre>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-hover table-stripped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>会员号</th>
+                        <th>姓名</th>
+                        <th>会员级别</th>
+                        <th>上次消费日期</th>
+                        <th>赠送金额</th>
+                        <th>卡余额</th>
+                        <th>总消费金额</th>
+                        <th>会员状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="vips" id="vo"}
+                    <tr>
+                        <td>{$i}</td>
+                        <td>{$vo.Id}</td>
+                        <td>{$vo.Name}</td>
+                        <td><span class="label label-primary">{$vipCls[$vo.VipClsId]}</span></td>
+                        <td>{$vo.LastConsumeDate}</td>
+                        <td>{$vo.GetAmt} <span class="bg-danger">({$vo.GetAmt1})</span></td>
+                        <td>{$vo.Balance} <span class="bg-danger">({$vo.Balance1})</span></td>
+                        <td>{$vo.TotalConsAmt}</td>
+                        <td><span class="label label-info">{$vipStatus[$vo.Status]}</span></td>
+                        <td>
+                            <button onclick="toggleFlow('row{$i}')">查看消费明细</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <!--{$vo.SQL}-->
+                        </td>
+                    </tr>
+                    <tr class="flows row{$i}">
+                        <td colspan="10">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>消费日期</th>
+                                    <th>消费类型</th>
+                                    <th>变更前(BeforeAmt)</th>
+                                    <th>变更后(Amt)</th>
+                                    <th>结余(SettleAmt)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {notempty name="vo.flows"}
+                                {volist name="vo.flows" id="flow" key="k"}
+                                <tr class="{$flow.color}">
+                                    <td>{$flow.OperDate}</td>
+                                    <td>
+                                        <span class="label label-{$consumType[$flow.OperType][1]}">{$consumType[$flow.OperType][0]}</span>
+                                    </td>
+                                    <td>{$flow.BeforeAmt}{notempty name="flow.color"}
+                                        <span class="bg-warning">({$flow.BeforeAmt1})</span>
+                                        {/notempty}</td>
+                                    <td>{$flow.Amt}</td>
+                                    <td>{$flow.SettleAmt}{notempty name="flow.color"}
+                                        <span class="bg-warning">({$flow.SettleAmt1})</span>{/notempty}</td>
+                                </tr>
+                                {notempty name="$flow.SQL"}
+                                <tr class="bg-info">
+                                    <td colspan="5"></td>
+                                </tr>
+                                {/notempty}
+                                {/volist}
+                                {/notempty}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        var flowMap = {};
+        function toggleFlow(cls) {
+            var isShow = flowMap[cls];
+            if(isShow) {
+                $('.'+cls).addClass('flows');
+            }else {
+                $('.'+cls).removeClass('flows');
+            }
+
+            flowMap[cls] = !isShow;
+        }
+    </script>
+</body>
+</html>
