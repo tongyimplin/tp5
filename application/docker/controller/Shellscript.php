@@ -96,4 +96,8 @@ cat ./config.js | grep const
         $buildScripts = get_latest_run_sh($projectName, $env, 8968);
         return $buildScripts;
     }
+
+    public function getPhpinfo() {
+        phpinfo();
+    }
 }

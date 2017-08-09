@@ -3,6 +3,6 @@ composer.lock
 *.log
 #thinkphp
 /application/db/
-application/.DS_Store
+#application/.DS_Store
 !/vendor/
 !/vendor/bin/phpunit
