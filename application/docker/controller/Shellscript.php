@@ -8,6 +8,7 @@
 
 namespace app\docker\controller;
 
+use \think\db;
 
 class Shellscript
 {
