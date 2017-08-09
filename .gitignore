@@ -4,3 +4,4 @@ composer.lock
 #thinkphp
 /application/db/
 application/.DS_Store
+!/vendor/
