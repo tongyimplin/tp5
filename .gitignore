@@ -5,3 +5,4 @@ composer.lock
 /application/db/
 application/.DS_Store
 !/vendor/
+!/vendor/bin/phpunit
