@@ -60,6 +60,16 @@ function get_aliyun_hub_conf() {
     return config('aliyunhub');
 }
 
+//获取中餐扫码点餐的代称
+function get_wxdczc_server_name() {
+    return 'wxdczcserver';
+}
+
+//获取老板通的代称
+function get_yunpos_boss_name() {
+    return 'yunposboss';
+}
+
 //获取快餐扫码点餐的代称
 function get_wxdc_server_name() {
     return 'wxdcserver';
